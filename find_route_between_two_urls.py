@@ -31,7 +31,7 @@ class RouteFinder(object):
         self._to_url = to_url
         self._max_depth = max_depth
         self._base_url = self._get_base_url()
-        self._previous = {}
+        self._sentences = {}
         self._stack = [(self._from_url, [])]
         self._visited = set()
 
@@ -71,7 +71,7 @@ class RouteFinder(object):
                 continue
             full_nested_url = f'{self._base_url}{href}'
             self._stack.append((full_nested_url, route + [full_nested_url]))
-            self._previous.setdefault(full_nested_url, sentence)
+            self._sentences.setdefault(full_nested_url, sentence)
 
     @staticmethod
     def _get_sentence(node: Tag) -> str:
@@ -88,7 +88,7 @@ class RouteFinder(object):
 
     def _restore_route(self, urls: List[str]) -> str:
         return '\n\n'.join(
-            f'#{index}\n{self._previous.get(url)}\n{url}'
+            f'#{index}\n{self._sentences.get(url)}\n{url}'
             for index, url in enumerate(urls, start=1)
         )
 
